@@ -54,4 +54,15 @@ jobs:
       - name: kuberntest manifest
         run: |
           sed -i 's/mywebsite:latest/${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
-       
+          
+      - name: Commit files
+        run: |
+          git config --local user.email "mshivam110@gmail.com"
+          git config --local user.name "shivam"
+          git commit -a -m "Add changes"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB1_TOKEN }}
+          branch: main  #${{ github.ref }}
+          repository: https://github.com/shivam779823/argocd-deployment.git  
