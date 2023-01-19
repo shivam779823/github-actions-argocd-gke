@@ -4,7 +4,7 @@ on:
     branches:
       - main
 env:     
-  IMAGE: mywebsite
+  IMAGE: mywebsite1
 
 jobs:
   build:
