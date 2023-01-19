@@ -80,12 +80,12 @@ jobs:
       #     repository: https://github.com/shivam779823/argocd-deployment.git
 
 
-      # - name: Commit and push changes
-      #   uses: devops-infra/action-commit-push@v0.3
-      #   with:
-      #     github_token: ${{ secrets.GITHUB1_TOKEN }}
-      #     commit_message: Version updated  
-      #     branch: main                    #${{ github.ref }}
-      #     repository: https://github.com/shivam779823/argocd-deployment.git
+      - name: Commit and push changes
+        uses: devops-infra/action-commit-push@v0.3
+        with:
+          github_token: ${{ secrets.GITHUB1_TOKEN }}
+          commit_message: Version updated  
+          branch: main                    #${{ github.ref }}
+          repository: https://github.com/shivam779823/argocd-deployment.git
    
 
