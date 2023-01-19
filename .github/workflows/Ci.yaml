@@ -68,12 +68,7 @@ jobs:
         run: |
           sed -i 's/mywebsite:latest/${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
    
-    #STEP 9 PUSH to Argo-cd github repo for deployment to GKE
-      - name: Commit files
-        run: |
-          git config --local user.email "mshivam110@gmail.com"
-          git config --local user.name "shivam"
-          git commit -a -m "Add changes"
+ 
      
 
 
