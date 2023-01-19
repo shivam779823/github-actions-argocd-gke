@@ -4,14 +4,14 @@ on:
     branches:
       - main
 env:     
-  IMAGE: mywebsite1
+  IMAGE: mywebsite
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
       - name: code Checkout
@@ -50,11 +50,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: shiva9921/mywebsite1:${{github.run_number}} 
-          
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}} 
+       #STEP 8 Kubernetes Deployment
       - name: kuberntest manifest
         run: |
-          sed -i 's/mywebsite:latest/shiva9921/mywebsite1:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
+          sed -i 's/mywebsite:latest/mywebsite:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
+                
       - name: Commit files
         run: |
           git config --local user.email "mshivam110@gmail.com"
