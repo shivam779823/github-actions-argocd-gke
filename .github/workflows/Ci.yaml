@@ -1,5 +1,88 @@
-- name: Commit and push changes
-      uses: devops-infra/action-commit-push@v0.3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Version updated
+name: ci-argo-cd
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+      branches:    
+      - main    
+
+env:  
+  IMAGE: mywebsite
+  
+
+jobs:
+  python-cicd:
+    runs-on: ubuntu-latest 
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+     
+    steps:
+    #STEP 1  code checkout  
+      - name: code Checkout
+        uses: actions/checkout@v3
+      
+    #STEP 2 install dependencies
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
+
+    #STEP 3 unit testing and Pylint
+      - name: Test with pytest
+      - run: find . -name \*.py | xargs pylint -f parseable | tee pylint.log
+      - run: |
+          pytest --cov=main test_main.py --junitxml=./xmlReport/output.xml 
+          python3 -m coverage xml   
+
+    #STEP 6 Dockerhub login
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    #STEP 7 Docker Build and Push 
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}}
+
+    #STEP 8 Kubernetes manifest upadting image tags
+      - name: kuberntest manifest
+        run: |
+          sed -i 's/mywebsite:latest/${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
+   
+    #STEP 9 PUSH to Argo-cd github repo for deployment to GKE
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "Add changes"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main                    #${{ github.ref }}
+          repository: https://github.com/shivam779823/argocd-deployment.git
+
+
+      # - name: Commit and push changes
+      #   uses: devops-infra/action-commit-push@v0.3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit_message: Version updated     
+
