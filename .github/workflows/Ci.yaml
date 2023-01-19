@@ -50,11 +50,11 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: shiva9921:${{github.run_number}} 
+          tags: shiva9921/mywebsite1:${{github.run_number}} 
           
       - name: kuberntest manifest
         run: |
-          sed -i 's/mywebsite:latest/shiva9921:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
+          sed -i 's/mywebsite:latest/shiva9921/mywebsite1:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
       - name: Commit files
         run: |
           git config --local user.email "mshivam110@gmail.com"
