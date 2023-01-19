@@ -43,12 +43,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     #STEP 7 Docker Build and Push 
- 
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{env.IMAGE}}:${{github.run_number}} 
        #STEP 8 Kubernetes Deployment
