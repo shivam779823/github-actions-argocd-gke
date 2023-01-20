@@ -5,6 +5,7 @@ on:
       - main
 env:     
   IMAGE: mywebsite
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
 jobs:
   build:
@@ -49,7 +50,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{github.actor}}/${{env.IMAGE}}:${{github.run_number}} 
+          tags: ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE}}:${{github.run_number}} 
       
    #STEP 8 Kubernetes Deployment
   
@@ -60,5 +61,5 @@ jobs:
           token: ${{ secrets.GITHUB1_TOKEN }}
           repository: ${{ github.actor }}/argocd-deployment
           event-type: new-image
-          client-payload: '{"image": "${{github.actor}}/${{ env.IMAGE }}:${{ github.run_number }}"}'     
+          client-payload: '{"image": "${{env.DOCKERHUB_USERNAME}}/${{ env.IMAGE }}:${{ github.run_number }}"}'     
     
