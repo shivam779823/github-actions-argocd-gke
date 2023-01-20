@@ -49,11 +49,12 @@ jobs:
         run: |
           sed -i 's/mywebsite:latest/${{env.IMAGE}}:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
           
-      - name: Commit and push changes
-        uses: devops-infra/action-commit-push@v0.3
+   
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
         with:
-          github_token: ${{ secrets.GITHUB1_TOKEN }}
-          commit_message: Version updated  
-          branch: ${{ github.ref }}
-          repository: shivam779823/argocd-deployment.git    
+          token: ${{ secrets.GITHUB1_TOKEN }}
+          repository: ${{ github.actor }}/argocd-deployment
+          event-type: new-image
+          client-payload: '{"image": "${{ github.actor }}/${{ env.IMAGE }}:${{ github.run_number }}"}'     
     
