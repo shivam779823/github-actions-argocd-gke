@@ -43,11 +43,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     #STEP 7 Docker Build and Push 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: shiva9921/${{env.IMAGE}}:${{github.run_number}} 
+      
    #STEP 8 Kubernetes Deployment
       - name: kuberntest manifest
         run: |
