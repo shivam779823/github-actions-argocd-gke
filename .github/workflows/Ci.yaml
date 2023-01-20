@@ -52,10 +52,22 @@ jobs:
       - name: kuberntest manifest
         run: |
           sed -i 's/mywebsite:latest/${{env.IMAGE}}:${{github.run_number}}/g' ${{ github.workspace }}/k8s/deployment.yaml
+      - name: checkout
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+      - name: Create local changes
+        run: |
+         ...
       - name: Commit files
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -a -m "Add changes"
-          git push https://${{ secrets.GITHUB1_TOKEN }}@github.com/shivam779823/argocd-deployment.git
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB1_TOKEN }}
+          branch: ${{ github.ref }}      
     
