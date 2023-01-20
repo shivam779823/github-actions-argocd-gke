@@ -5,7 +5,7 @@ on:
       - main
 env:     
   IMAGE: mywebsite
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_USERNAME: shiva9921 
 
 jobs:
   build:
