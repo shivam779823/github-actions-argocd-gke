@@ -35,7 +35,6 @@ jobs:
           python3 -m coverage xml
           ls
           cat coverage.xml
-          cat /github/workspace/sonar-project.properties
           cat /opt/sonar-scanner/conf/sonar-scanner.properties
 
       - name: Linting
