@@ -31,7 +31,7 @@ jobs:
           
       - name: Test with pytest
         run: |
-          pytest --cov=main test_main.py --junitxml=./xmlReport/output.xml 
+          pytest --cov=main test_main.py --junitxml=./output.xml 
           python3 -m coverage xml
           ls
           cat coverage.xml
