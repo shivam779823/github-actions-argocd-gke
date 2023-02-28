@@ -33,6 +33,7 @@ jobs:
         run: |
           pytest --cov=main test_main.py --junitxml=./xmlReport/output.xml 
           python3 -m coverage xml
+          ls
       - name: Linting
         run: |
           find . -name \*.py | xargs pylint -f parseable | tee pylint.log
